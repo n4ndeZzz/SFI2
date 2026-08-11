@@ -1,10 +1,14 @@
 ```javascript
-$: stack(
-  s("bd ~ [bd ~ bd bd] bd*2")
-    .gain("0.9 0.8 1 0.9"),
+const { visualid } = createParams('visualid')
 
-  s("~ sd ~ sd")
-    .gain("0.8 1"),
+let kick = s("bd ~ [bd ~ bd bd] bd*2").gain("0.9 0.8 1 0.9").visualid("kick")
+let snare =  s("~ sd ~ sd").gain("0.8 1").visualid("snare")
+
+$: stack(
+    kick,
+    kick.osc(),
+    snare,
+    snare.osc(),
 
   s("hh*8")
     .gain("0.5 0.35 0.45 0.3 0.5 0.35 0.45 0.3")
