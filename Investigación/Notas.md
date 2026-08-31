@@ -1,5 +1,3 @@
-Aquí va, con tus valores reales como ejemplo:
-
 **En Open Stage Control**
 
 - **send** (`127.0.0.1:7000`) — a dónde manda Open Stage Control lo que generan los widgets. Es la dirección de salida: "lo que yo genero, va para allá".
