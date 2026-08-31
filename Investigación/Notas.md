@@ -18,3 +18,4 @@ Open Stage Control  osc-port: 8001    ◀──   TD  oscout Network Port: 8001 
 ```
 
 `port` (el 8090) es el único que queda fuera de esa pareja — solo sirve para que tú abras la interfaz en el navegador, no participa en el puente de datos.
+<img width="670" height="506" alt="image" src="https://github.com/user-attachments/assets/2e88f22c-2ef0-4dfe-ad1f-3def91c97344" />
