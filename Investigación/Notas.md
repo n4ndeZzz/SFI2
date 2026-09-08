@@ -21,3 +21,13 @@ Open Stage Control  osc-port: 8001    ◀──   TD  oscout Network Port: 8001 
 
 
 <img width="670" height="506" alt="image" src="https://github.com/user-attachments/assets/2e88f22c-2ef0-4dfe-ad1f-3def91c97344" />
+
+**Notas de la parte final de añadir al público**
+
+Al usarlo desde el pc de la universidad, necesitamos conectarnos a un pc al cual no tenemos acceso a su ip y sus rutas, por lo que el puerto que usamos (3000) debemos de usar un tunnel de microsoft, el cual elegí verlo como un casillero de la usa, es una conexión que "monta" el puerto para poder ser usado desde cualquier parte, la estructura es algo así:
+
+<img width="1441" height="742" alt="Sin título-2026-09-08-0857" src="https://github.com/user-attachments/assets/ed33dc8d-10a6-4a4c-bce4-5d460b6656fe" />
+
+**Activación del puerto:**
+<img width="1261" height="130" alt="image" src="https://github.com/user-attachments/assets/d99d1f47-503b-4fde-8923-ccfa46eea85e" />
+
