@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Orquideorama · público</title>
+<style>
+  :root{ --bg:#17131e; --panel:#221b2e; --ink:#eae6f2; --mute:#8677a0; --lilac:#ac94c6; --purple:#6c4f9b; --sky:#b1d1ea; --blue:#7fa9c6; --yellow:#f4e07e; }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ margin:0; height:100%; background:var(--bg); color:var(--ink); font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; }
+  body{ display:flex; flex-direction:column; padding:20px 18px 28px; gap:14px; touch-action:manipulation; }
+  header{ display:flex; justify-content:space-between; align-items:baseline; }
+  h1{ margin:0; font-size:18px; font-weight:600; letter-spacing:.04em; }
+  #state{ font-size:13px; color:var(--mute); display:flex; align-items:center; gap:6px; }
+  #dot{ width:9px; height:9px; border-radius:50%; background:var(--mute); }
+  #dot.on{ background:var(--yellow); box-shadow:0 0 8px var(--yellow); }
+  .card{ background:var(--panel); border-radius:16px; padding:16px 16px 18px; flex:1; display:flex; flex-direction:column; justify-content:center; gap:10px; }
+  .row{ display:flex; justify-content:space-between; align-items:baseline; }
+  .name{ font-size:22px; font-weight:600; }
+  .hint{ font-size:12px; color:var(--mute); }
+  .val{ font-variant-numeric:tabular-nums; font-size:18px; color:var(--sky); }
+  input[type=range]{ -webkit-appearance:none; appearance:none; width:100%; height:44px; background:transparent; margin:0; }
+  input[type=range]::-webkit-slider-runnable-track{ height:10px; border-radius:6px; background:linear-gradient(90deg,var(--accent) var(--p,0%),#3a3048 var(--p,0%)); }
+  input[type=range]::-moz-range-track{ height:10px; border-radius:6px; background:#3a3048; }
+  input[type=range]::-moz-range-progress{ height:10px; border-radius:6px; background:var(--accent); }
+  input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:38px; height:38px; margin-top:-14px; border-radius:50%; background:var(--accent); border:3px solid var(--bg); }
+  input[type=range]::-moz-range-thumb{ width:32px; height:32px; border-radius:50%; background:var(--accent); border:3px solid var(--bg); }
+  #s-movimiento{ --accent:var(--lilac); } #s-ruido{ --accent:var(--yellow); } #s-multitud{ --accent:var(--blue); }
+</style>
+</head>
+<body>
+  <header><h1>orquideorama</h1><div id="state"><span id="dot"></span><span id="txt">conectando…</span></div></header>
+
+  <section class="card"><div class="row"><div class="name">Movimiento</div><div class="val" id="v-movimiento">0</div></div>
+    <input type="range" id="s-movimiento" min="0" max="100" value="0"><div class="hint">cuánto te mueves</div></section>
+  <section class="card"><div class="row"><div class="name">Ruido</div><div class="val" id="v-ruido">0</div></div>
+    <input type="range" id="s-ruido" min="0" max="100" value="0"><div class="hint">cuánto grita o suena el lugar</div></section>
+  <section class="card"><div class="row"><div class="name">Multitud</div><div class="val" id="v-multitud">0</div></div>
+    <input type="range" id="s-multitud" min="0" max="100" value="0"><div class="hint">qué tan lleno está</div></section>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const NAMES = ['movimiento','ruido','multitud'];
+  const socket = io();
+  const dot = document.getElementById('dot'), txt = document.getElementById('txt');
+  const last = {}; let lastSend = 0;
+
+  function paint(n){ const el = document.getElementById('s-'+n); el.style.setProperty('--p', el.value+'%'); document.getElementById('v-'+n).textContent = el.value; }
+  function send(n, force){
+    const now = performance.now();
+    if (!force && now - lastSend < 50) return;          // maximo ~20 mensajes por segundo
+    lastSend = now;
+    const v = Number(document.getElementById('s-'+n).value)/100;
+    if (socket.connected) socket.emit('slider', { name:n, value:v });
+    last[n] = v;
+  }
+  NAMES.forEach(n => {
+    const el = document.getElementById('s-'+n);
+    paint(n);
+    el.addEventListener('input', () => { paint(n); send(n, false); });
+    el.addEventListener('change', () => send(n, true));  // garantiza el valor final
+  });
+
+  socket.on('connect', () => { dot.classList.add('on'); txt.textContent = 'conectado'; NAMES.forEach(n => send(n, true)); });
+  socket.on('welcome', (m) => { txt.textContent = 'conectado · #' + m.id; });
+  socket.on('disconnect', () => { dot.classList.remove('on'); txt.textContent = 'reconectando…'; });
+
+  // evita que el celular apague la pantalla durante el show
+  if ('wakeLock' in navigator) { const lock = () => navigator.wakeLock.request('screen').catch(()=>{}); lock(); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') lock(); }); }
+</script>
+</body>
+</html>

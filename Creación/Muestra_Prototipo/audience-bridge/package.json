@@ -1,0 +1,18 @@
+{
+  "name": "orquideorama-audience-bridge",
+  "version": "1.0.0",
+  "description": "Puente de audiencia de Orquideorama: sliders en celulares (socket.io) hacia TouchDesigner (OSC)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "fake": "node tools/fake-audience.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "socket.io": "^4.7.2"
+  },
+  "devDependencies": {
+    "socket.io-client": "^4.7.2"
+  },
+  "license": "ISC"
+}
